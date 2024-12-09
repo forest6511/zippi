@@ -1,5 +1,38 @@
+# dependencies
 node_modules
 
+# build
 /.cache
 /build
+
+# environment variables
 .env
+
+# prisma
+/prisma/*.db
+/prisma/migrations/.DS_Store
+
+# misc
+.DS_Store
+*.pem
+
+# IDEs and editors
+/.idea
+.vscode
+*.swp
+*.swo
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# OS
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
