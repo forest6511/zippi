@@ -1,7 +1,6 @@
-import { Form } from "@remix-run/react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
 import {
   Card,
   CardContent,
@@ -9,9 +8,66 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "~/components/ui/card";
+
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
+import {Form, Link, useLoaderData} from "@remix-run/react";
+import { getSession, commitSession } from "~/services/session.server";
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const session = await getSession(request.headers.get("Cookie"));
+
+  console.log("login.tsx loader session", session.data.userId);
+
+  if (session.has("userId")) {
+    // すでにログインしている場合はホームにリダイレクト
+    return redirect("/");
+  }
+
+  const data = { error: session.get("error") };
+
+  return Response.json(data, {
+    headers: {
+      "Set-Cookie": await commitSession(session),
+    },
+  });
+}
+
+export async function action({ request }: ActionFunctionArgs) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const form = await request.formData();
+  const email = form.get("email");
+  const password = form.get("password");
+
+  // サーバー側のプロンプトに表示
+  console.log("login.tsx action email", email)
+  console.log("login.tsx action password", password)
+
+  // 仮の実装 (認証OKとして画面遷移)
+  if (email === "test@example.com" && password === "password") {
+    session.set("userId", "123");
+    // _index.tsxへ遷移
+    return redirect("/", {
+      headers: {
+        "Set-Cookie": await commitSession(session),
+      },
+    });
+  }
+
+  session.flash("error", "メールアドレスまたはパスワードが正しくありません");
+  return redirect("/login", {
+    headers: {
+      "Set-Cookie": await commitSession(session),
+    },
+  });
+}
 
 export default function Login() {
+  // loaderから返されたデータを取得
+  // error: フラッシュメッセージとしてセッションに保存されたエラーメッセージ
+  const { error } = useLoaderData<typeof loader>();
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <Card className="w-[350px]">
@@ -21,6 +77,10 @@ export default function Login() {
         </CardHeader>
         <CardContent>
           <Form method="post" className="space-y-4">
+            {/* エラーメッセージが存在する場合のみ表示 */}
+            {error && (
+                <div className="text-red-500 text-sm">{error}</div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="email">メールアドレス</Label>
               <Input id="email" name="email" type="email" required />
@@ -35,9 +95,9 @@ export default function Login() {
           </Form>
         </CardContent>
         <CardFooter className="flex justify-center">
-          <a href="/signup" className="text-sm text-blue-600 hover:underline">
+          <Link to="/signup" className="text-sm text-blue-600 hover:underline">
             アカウントをお持ちでない方はこちら
-          </a>
+          </Link>
         </CardFooter>
       </Card>
     </div>
