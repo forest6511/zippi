@@ -46,7 +46,22 @@ export async function action({ request }: ActionFunctionArgs) {
 
   // 仮の実装 (認証OKとして画面遷移)
   if (email === "test@example.com" && password === "password") {
-    session.set("userId", "123");
+    // テスト用のセッション情報を設定
+    const testUserData = {
+      userId: "123",
+      email: email as string,
+      name: "テストユーザー",
+      role: "user",
+      lastLoginAt: new Date().toISOString()
+    };
+
+    // セッションに情報を設定
+    session.set("userId", testUserData.userId);
+    session.set("email", testUserData.email);
+    session.set("name", testUserData.name);
+    session.set("role", testUserData.role);
+    session.set("lastLoginAt", testUserData.lastLoginAt);
+
     // _index.tsxへ遷移
     return redirect("/", {
       headers: {
