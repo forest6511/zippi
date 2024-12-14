@@ -2,6 +2,7 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { Form } from "@remix-run/react";
 import { requireUser, logout } from "~/services/auth.server";
 import { Button } from "~/components/ui/button";
+import {getSession} from "~/services/session.server";
 
 // ログアウト処理
 export async function action({ request }: ActionFunctionArgs) {
@@ -11,8 +12,19 @@ export async function action({ request }: ActionFunctionArgs) {
 
 // ログイン済みチェック
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  console.log("_index.tsx loader", request);
+  console.log("_index.tsx loader", request.url);
   await requireUser(request);
+
+  // セッションからデータを取得して表示
+  const session = await getSession(request.headers.get("Cookie"));
+  console.log("Session Data:", {
+    userId: session.get("userId"),
+    email: session.get("email"),
+    name: session.get("name"),
+    role: session.get("role"),
+    lastLoginAt: session.get("lastLoginAt")
+  });
+
   return null;
 };
 
