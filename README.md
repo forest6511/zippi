@@ -95,3 +95,7 @@ This will initialize your database schema for local development.
 For UI setup, refer to the official [shadcn UI installation guide for Remix](https://ui.shadcn.com/docs/installation/remix).
 
 ---
+
+## Libraries
+
+- **lucide-react / react-icons **: A collection of beautifully simple and consistent React icons.
