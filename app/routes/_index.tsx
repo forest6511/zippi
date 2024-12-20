@@ -1,8 +1,8 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
 import { Form } from '@remix-run/react'
-import { requireUser, logout } from '~/.server/auth/service'
-import { Button } from '~/components/ui/button'
-import { getSession } from '~/.server/session'
+import { requireUser, logout } from '@/.server/auth/service'
+import { Button } from '@/components/ui/button'
+import { getSession } from '@/.server/session'
 
 // ログアウト処理
 export async function action({ request }: ActionFunctionArgs) {
