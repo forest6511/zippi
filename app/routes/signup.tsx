@@ -1,21 +1,21 @@
 import { Form, useLoaderData } from '@remix-run/react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import {
+  Button,
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
+  Input,
+  Label,
+} from '@/components/ui'
 import { FcGoogle } from 'react-icons/fc'
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 
-import { signup } from '~/.server/auth/service'
-import { getSession, commitSession } from '~/.server/session'
+import { signup } from '@/.server/auth/service'
+import { getSession, commitSession } from '@/.server/session'
 
 export async function action({ request }: ActionFunctionArgs) {
   const session = await getSession(request.headers.get('Cookie'))
