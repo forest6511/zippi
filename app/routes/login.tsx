@@ -10,9 +10,11 @@ import {
   Label,
 } from '@/components/ui'
 
+type ActionData = { error: string } | undefined
+
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
-import { Form, Link, useLoaderData } from '@remix-run/react'
+import { Form, Link, useActionData } from '@remix-run/react'
 import { getSession, commitSession } from '@/.server/session'
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -25,13 +27,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     return redirect('/')
   }
 
-  const data = { error: session.get('error') }
-
-  return Response.json(data, {
-    headers: {
-      'Set-Cookie': await commitSession(session),
-    },
-  })
+  return null
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -69,19 +65,14 @@ export async function action({ request }: ActionFunctionArgs) {
       },
     })
   }
-
-  session.flash('error', 'メールアドレスまたはパスワードが正しくありません')
-  return redirect('/login', {
-    headers: {
-      'Set-Cookie': await commitSession(session),
-    },
-  })
+  // エラーの場合はオブジェクトをreturn
+  return { error: 'メールアドレスまたはパスワードが正しくありません' }
 }
 
 export default function Login() {
-  // loaderから返されたデータを取得
-  // error: フラッシュメッセージとしてセッションに保存されたエラーメッセージ
-  const { error } = useLoaderData<typeof loader>()
+  // actionから返されたデータを取得
+  // error: actionから返されたエラーメッセージ
+  const actionData = useActionData<ActionData>()
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -93,7 +84,7 @@ export default function Login() {
         <CardContent>
           <Form method="post" className="space-y-4">
             {/* エラーメッセージが存在する場合のみ表示 */}
-            {error && <div className="text-red-500 text-sm">{error}</div>}
+            {actionData?.error && <div className="text-red-500 text-sm">{actionData.error}</div>}
             <div className="space-y-2">
               <Label htmlFor="email">メールアドレス</Label>
               <Input id="email" name="email" type="email" required />
