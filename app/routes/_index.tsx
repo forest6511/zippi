@@ -6,13 +6,13 @@ import { getSession } from '@/.server/session'
 
 // ログアウト処理
 export async function action({ request }: ActionFunctionArgs) {
-  console.log('_index.tsx action', request)
+  console.log('route.tsx action', request)
   return logout(request)
 }
 
 // ログイン済みチェック
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  console.log('_index.tsx loader', request.url)
+  console.log('route.tsx loader', request.url)
   await requireUser(request)
 
   // セッションからデータを取得して表示

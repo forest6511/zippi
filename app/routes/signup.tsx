@@ -9,13 +9,13 @@ import {
   CardTitle,
   Input,
   Label,
-} from '@/components/ui'
+} from '~/components/ui'
 import { FcGoogle } from 'react-icons/fc'
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 
-import { signup } from '@/.server/auth/service'
-import { getSession, commitSession } from '@/.server/session'
+import { signup } from '~/.server/auth/service'
+import { getSession, commitSession } from '~/.server/session'
 
 type ActionData = { error: string } | undefined
 
@@ -25,7 +25,7 @@ export async function action({ request }: ActionFunctionArgs) {
   try {
     const formData = await request.formData()
 
-    console.log('Start signup.tsx action.')
+    console.log('Start route.tsx action.')
     const user = await signup(formData)
 
     session.set('userId', user.id)
@@ -40,7 +40,7 @@ export async function action({ request }: ActionFunctionArgs) {
       },
     })
   } catch (error) {
-    console.log('Start signup.tsx action error', error)
+    console.log('Start route.tsx action error', error)
     return {
       error: error instanceof Error ? error.message : 'アカウント作成に失敗しました',
     }
@@ -48,7 +48,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  console.log('Start signup.tsx loader.')
+  console.log('Start route.tsx loader.')
   const session = await getSession(request.headers.get('Cookie'))
 
   if (session.has('userId')) {
@@ -102,11 +102,13 @@ export default function Signup() {
               <span className="bg-white px-2 text-muted-foreground">または</span>
             </div>
           </div>
-          <Form action="/auth/google" method="post">
+          <Form action={'/auth/google'} method="post">
             <Button
               variant="outline"
               type="submit"
               className="w-full mt-4 flex items-center justify-center"
+              name="provider"
+              value="google"
             >
               <FcGoogle className="mr-2 h-4 w-4" />
               Googleでサインアップ

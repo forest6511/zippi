@@ -17,6 +17,7 @@ export type SessionData = {
   name: string
   role: string
   lastLoginAt: string
+  oauthState?: string
 }
 
 export type SessionFlashData = {
