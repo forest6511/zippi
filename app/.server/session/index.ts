@@ -1,10 +1,13 @@
 import { createSessionStorage, Session } from '@remix-run/node'
-import { initializeRedisClient } from './redis'
+import { initializeRedisClient } from '@/.server/session/redis'
 
 // セッション関連の定数定義
 const COOKIE_NAME = '_remix-session'
 const REDIS_SESSION_PREFIX = `${COOKIE_NAME}:`
-const SESSION_EXPIRY = process.env.SESSION_EXPIRY ? parseInt(process.env.SESSION_EXPIRY) : 60 // デフォルト1分
+// TODO: デフォルト60秒
+// テスト用: Redisから指定秒を超えると、自動的にsession情報が削除されること.
+// ex: _remix-session:2a7ead9f-765a-49f5-9aa2-6ad66c9e4329
+const SESSION_EXPIRY = process.env.SESSION_EXPIRY ? parseInt(process.env.SESSION_EXPIRY) : 60
 const SESSION_SECRET = process.env.SESSION_SECRET || 's3cr3t'
 
 // セッションデータの型定義
@@ -14,6 +17,7 @@ export type SessionData = {
   name: string
   role: string
   lastLoginAt: string
+  oauthState?: string
 }
 
 export type SessionFlashData = {
@@ -94,6 +98,7 @@ let sessionStorage: Awaited<ReturnType<typeof createRedisSessionStorage>>
 
 async function initializeSessionStorage() {
   if (!sessionStorage) {
+    console.log('Initialize Session Storage')
     sessionStorage = await createRedisSessionStorage()
   }
   return sessionStorage
