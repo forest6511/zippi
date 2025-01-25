@@ -1,8 +1,9 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
-import { Form } from '@remix-run/react'
 import { requireUser, logout } from '@/.server/auth/service'
-import { Button } from '@/components/ui/button'
 import { getSession } from '@/.server/session'
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui'
+import { Link } from '@remix-run/react'
+import { countries } from '~/data/mock'
 
 // ログアウト処理
 export async function action({ request }: ActionFunctionArgs) {
@@ -30,17 +31,33 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function Index() {
   return (
-    <div className="flex h-screen items-center justify-center">
-      <div className="flex flex-col items-center gap-16">
-        <header className="flex flex-col items-center gap-9">
-          <h1 className="text-2xl font-bold">ダッシュボード</h1>
-        </header>
-        <Form method="post">
-          <Button type="submit" variant="outline">
-            ログアウト
-          </Button>
-        </Form>
-      </div>
+    <div className="min-h-screen bg-background">
+      <main className="container mx-auto p-4 md:p-6">
+        <h1 className="text-3xl font-bold mb-6">掲示板</h1>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {Object.entries(countries).map(([countryCode, country]) => (
+            <Card key={countryCode}>
+              <CardHeader>
+                <CardTitle>{country.name}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  {Object.entries(country.regions).map(([regionCode, region]) => (
+                    <li key={regionCode}>
+                      <Link
+                        to={`/${countryCode}/${regionCode}`}
+                        className="text-blue-600 hover:underline"
+                      >
+                        {region}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </main>
     </div>
   )
 }
