@@ -3,7 +3,6 @@ export { Input } from './input'
 export { Label } from './label'
 export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './card'
 export { Textarea } from './textarea'
-export { Header } from './header'
 export {
   Select,
   SelectTrigger,
@@ -22,3 +21,15 @@ export {
   PaginationNext,
   PaginationPrevious,
 } from './pagination'
+export {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger
+} from './dialog'

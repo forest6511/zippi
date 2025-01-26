@@ -1,18 +1,20 @@
-import { useParams, Link, Outlet } from '@remix-run/react'
-import { Header } from '~/components/ui'
-import { CategoryMenu } from '~/components/category-menu'
-import { categories, type CategoryKey } from '~/data/mock/categories'
-import { countries, posts } from '~/data/mock'
+import { useParams, Link, Outlet } from "@remix-run/react"
+import { Header } from "~/components/header"
+import { CategoryMenu } from "~/components/category-menu"
+import { categories, type CategoryKey } from "~/data/mock/categories"
+import { countries, posts } from "~/data/mock"
 
 export default function RegionPage() {
-  const { country, region, category } = useParams<{
+  const { country, region, category, post } = useParams<{
     country: string
     region: string
     category?: string
+    post?: string
   }>()
+
   const countryName = country && countries[country] ? countries[country].name : country
   const regionName = (country && region && countries[country]?.regions[region]) || region
-  if (category) {
+  if (category || post) {
     return <Outlet />
   }
 
@@ -29,11 +31,11 @@ export default function RegionPage() {
               <Link to="/" className="text-blue-600 hover:underline">
                 ホーム
               </Link>
-              {' > '}
+              {" > "}
               <Link to={`/${country}`} className="text-blue-600 hover:underline">
                 {countryName}
               </Link>
-              {' > '}
+              {" > "}
               <span>{regionName}</span>
             </div>
             <h1 className="text-3xl font-bold mb-6">{regionName}掲示板</h1>
@@ -43,9 +45,7 @@ export default function RegionPage() {
               {(Object.entries(categories) as [CategoryKey, (typeof categories)[CategoryKey]][])
                 .slice(0, 6)
                 .map(([categoryKey, category]) => {
-                  const categoryPosts = posts
-                    .filter((post) => post.category === categoryKey)
-                    .slice(0, 5)
+                  const categoryPosts = posts.filter((post) => post.category === categoryKey).slice(0, 5)
 
                   return (
                     <div key={categoryKey} className="bg-white rounded-lg p-6 border">
@@ -64,7 +64,7 @@ export default function RegionPage() {
                               <div className="text-sm text-muted-foreground">
                                 <span>閲覧数: {post.views}</span>
                                 <span className="mx-2">•</span>
-                                <span>返信: {post.replies}</span>
+                                <span>返信: {post.replyCount ?? 0}</span>
                                 <span className="mx-2">•</span>
                                 <span>投稿: {post.date}</span>
                               </div>
@@ -90,3 +90,4 @@ export default function RegionPage() {
     </div>
   )
 }
+
