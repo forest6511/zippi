@@ -6,6 +6,7 @@ import { CategoryMenu } from "~/components/category-menu"
 import { ImageGallery } from "~/components/image-gallery"
 import { categories, type CategoryKey } from "~/data/mock/categories"
 import { countries, posts, type Post, type Reply } from "~/data/mock"
+import { MessageCircle } from "lucide-react"
 
 function isCategoryKey(key: string): key is CategoryKey {
   return Object.keys(categories).includes(key)
@@ -105,6 +106,16 @@ export default function PostPage() {
               <div className="prose max-w-none">
                 <p>{post.content}</p>
               </div>
+
+              {/* 画像がある場合にメッセージを送るボタンを追加 */}
+              {post.images && post.images.length > 0 && (
+                <div className="mt-6">
+                  <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <MessageCircle className="mr-2 h-5 w-5" />
+                    メッセージを送る
+                  </button>
+                </div>
+              )}
             </article>
 
             {post.replies && (
