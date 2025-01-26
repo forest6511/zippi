@@ -79,11 +79,11 @@ export const posts: Post[] = [
     thumbnail: "https://placehold.jp/150x150.png?text=LA_Overview",
     images: [
       {
-        url: "https://placehold.jp/800x600.png?text=Hollywood_Sign",
+        url: "https://img-dev.miwara.com/media/test.jpg",
         description: "ハリウッドの丘の上に立つ象徴的な看板",
       },
       {
-        url: "https://placehold.jp/800x600.png?text=Disneyland",
+        url: "https://img-dev.miwara.com/media/test2.jpg",
         description: "夢と魔法の王国、ディズニーランド",
       },
       {

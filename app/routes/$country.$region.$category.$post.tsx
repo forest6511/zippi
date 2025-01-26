@@ -1,11 +1,11 @@
 import { useParams, Link, useLoaderData, Form } from "@remix-run/react"
 import { json, type LoaderFunction, type ActionFunction } from "@remix-run/node"
-import { useState, useEffect, useRef } from "react"
+import { ClientOnly } from "remix-utils/client-only"
 import { Header } from "~/components/header"
 import { CategoryMenu } from "~/components/category-menu"
+import { ImageGallery } from "~/components/image-gallery"
 import { categories, type CategoryKey } from "~/data/mock/categories"
 import { countries, posts, type Post, type Reply } from "~/data/mock"
-import { X } from "lucide-react"
 
 function isCategoryKey(key: string): key is CategoryKey {
   return Object.keys(categories).includes(key)
@@ -47,42 +47,6 @@ export const action: ActionFunction = async ({ request, params }) => {
   return json({ success: true })
 }
 
-function Modal({ isOpen, onClose, children }: { isOpen: boolean; onClose: () => void; children: React.ReactNode }) {
-  const modalRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onClose()
-      }
-    }
-
-    if (isOpen) {
-      document.addEventListener("keydown", handleKeyDown)
-      return () => {
-        document.removeEventListener("keydown", handleKeyDown)
-      }
-    }
-  }, [isOpen, onClose])
-
-  if (!isOpen) return null
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div ref={modalRef} className="relative max-w-4xl max-h-[90vh] overflow-auto bg-white rounded-lg shadow-xl">
-        <button
-          onClick={onClose}
-          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-          aria-label="閉じる"
-        >
-          <X size={24} />
-        </button>
-        {children}
-      </div>
-    </div>
-  )
-}
-
 export default function PostPage() {
   const { country, region, category } = useParams<{
     country: string
@@ -90,7 +54,6 @@ export default function PostPage() {
     category: string
   }>()
   const { post } = useLoaderData<LoaderData>()
-  const [selectedImage, setSelectedImage] = useState<string | null>(null)
 
   const countryName = country && countries[country] ? countries[country].name : country
   const regionName = (country && region && countries[country]?.regions[region]) || region
@@ -135,22 +98,9 @@ export default function PostPage() {
                 {post.replyCount !== undefined && ` | コメント数: ${post.replyCount}`}
               </div>
 
-              {post.images && post.images.length > 0 && (
-                <div className="mb-6 overflow-x-auto">
-                  <div className="flex space-x-4">
-                    {post.images.map((image, index) => (
-                      <div key={index} className="flex-shrink-0">
-                        <img
-                          src={image.url || "/placeholder.svg"}
-                          alt={image.description}
-                          className="w-32 h-24 md:w-48 md:h-36 object-cover rounded-lg cursor-pointer transition-transform hover:scale-105"
-                          onClick={() => setSelectedImage(image.url)}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+              <ClientOnly fallback={<div>画像を読み込み中...</div>}>
+                {() => post.images && post.images.length > 0 && <ImageGallery images={post.images} />}
+              </ClientOnly>
 
               <div className="prose max-w-none">
                 <p>{post.content}</p>
@@ -206,16 +156,7 @@ export default function PostPage() {
           </div>
         </div>
       </main>
-
-      <Modal isOpen={!!selectedImage} onClose={() => setSelectedImage(null)}>
-        {selectedImage && (
-          <img
-            src={selectedImage || "/placeholder.svg"}
-            alt="拡大画像"
-            className="max-w-full max-h-[80vh] object-contain"
-          />
-        )}
-      </Modal>
     </div>
   )
 }
+

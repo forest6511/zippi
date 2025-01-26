@@ -36,6 +36,7 @@
     "redis": "^4.7.0",
     "remix-auth": "^4.0.0",
     "remix-auth-form": "^3.0.0",
+    "remix-utils": "^7.5.0",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.24.1"
