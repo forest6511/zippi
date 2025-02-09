@@ -1,5 +1,5 @@
-import { useEffect } from "react"
-import { X } from "lucide-react"
+import { useEffect } from 'react'
+import { X } from 'lucide-react'
 
 interface ModalProps {
   isOpen: boolean
@@ -8,18 +8,17 @@ interface ModalProps {
 }
 
 export function Modal({ isOpen, onClose, children }: ModalProps) {
-
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (event.key === 'Escape') {
         onClose()
       }
     }
 
     if (isOpen) {
-      document.addEventListener("keydown", handleKeyDown)
+      document.addEventListener('keydown', handleKeyDown)
       return () => {
-        document.removeEventListener("keydown", handleKeyDown)
+        document.removeEventListener('keydown', handleKeyDown)
       }
     }
   }, [isOpen, onClose])
@@ -53,4 +52,3 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
     </div>
   )
 }
-

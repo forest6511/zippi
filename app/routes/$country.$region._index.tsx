@@ -1,22 +1,19 @@
-import { useParams, Link, Outlet } from "@remix-run/react"
-import { Header } from "~/components/header"
-import { CategoryMenu } from "~/components/category-menu"
-import { categories, type CategoryKey } from "~/data/mock/categories"
-import { countries, posts } from "~/data/mock"
+import { useParams, Link } from '@remix-run/react'
+import { Header } from '~/components/header'
+import { CategoryMenu } from '~/components/category-menu'
+import { categories, type CategoryKey } from '~/data/mock/categories'
+import { countries, posts } from '~/data/mock'
+import { Breadcrumbs } from '~/components/common/breadcrumbs'
+import { Button } from '~/components/ui/button'
 
 export default function RegionPage() {
-  const { country, region, category, post } = useParams<{
+  const { country, region } = useParams<{
     country: string
     region: string
-    category?: string
-    post?: string
   }>()
 
   const countryName = country && countries[country] ? countries[country].name : country
   const regionName = (country && region && countries[country]?.regions[region]) || region
-  if (category || post) {
-    return <Outlet />
-  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -27,17 +24,13 @@ export default function RegionPage() {
 
           {/* メインコンテンツ */}
           <div className="md:w-4/5">
-            <div className="mb-4">
-              <Link to="/" className="text-blue-600 hover:underline">
-                ホーム
-              </Link>
-              {" > "}
-              <Link to={`/${country}`} className="text-blue-600 hover:underline">
-                {countryName}
-              </Link>
-              {" > "}
-              <span>{regionName}</span>
-            </div>
+            <Breadcrumbs
+              items={[
+                { label: 'ホーム', href: '/' },
+                { label: countryName, href: `/${country}` },
+                { label: regionName },
+              ]}
+            />
             <h1 className="text-3xl font-bold mb-6">{regionName}掲示板</h1>
 
             {/* カテゴリー別記事一覧 */}
@@ -45,14 +38,31 @@ export default function RegionPage() {
               {(Object.entries(categories) as [CategoryKey, (typeof categories)[CategoryKey]][])
                 .slice(0, 6)
                 .map(([categoryKey, category]) => {
-                  const categoryPosts = posts.filter((post) => post.category === categoryKey).slice(0, 5)
+                  const categoryPosts = posts
+                    .filter((post) => post.category === categoryKey)
+                    .slice(0, 5)
 
                   return (
                     <div key={categoryKey} className="bg-white rounded-lg p-6 border">
-                      <h2 className="text-xl font-bold mb-4 flex items-center">
-                        <category.icon className="mr-2" style={{ color: category.color }} />
-                        {category.name}
-                      </h2>
+                      <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-xl font-bold flex items-center">
+                          <category.icon className="mr-2" style={{ color: category.color }} />
+                          {category.name}
+                        </h2>
+                        <Button
+                          asChild
+                          variant="outline"
+                          size="sm"
+                          style={{
+                            backgroundColor: category.color,
+                            borderColor: category.color,
+                            color: 'white',
+                          }}
+                          className="hover:opacity-80 transition-opacity"
+                        >
+                          <Link to={`/${country}/${region}/${categoryKey}/new`}>新規投稿</Link>
+                        </Button>
+                      </div>
                       <div className="space-y-4">
                         {categoryPosts.map((post) => (
                           <article key={post.id} className="border-b pb-4 last:border-b-0">
@@ -90,4 +100,3 @@ export default function RegionPage() {
     </div>
   )
 }
-
