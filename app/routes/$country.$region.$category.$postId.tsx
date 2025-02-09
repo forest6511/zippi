@@ -19,6 +19,7 @@ type LoaderData = {
 
 export const loader: LoaderFunction = async ({ params }) => {
   const { postId } = params
+  console.log(params)
   const post = posts.find((p) => p.id === Number(postId)) || null
   return json<LoaderData>({ post })
 }

@@ -7,18 +7,13 @@ import { Breadcrumbs } from '~/components/common/breadcrumbs'
 import { Button } from '~/components/ui/button'
 
 export default function RegionPage() {
-  const { country, region, category, post } = useParams<{
+  const { country, region } = useParams<{
     country: string
     region: string
-    category?: string
-    post?: string
   }>()
 
   const countryName = country && countries[country] ? countries[country].name : country
   const regionName = (country && region && countries[country]?.regions[region]) || region
-  if (category || post) {
-    return <Outlet />
-  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -65,7 +60,7 @@ export default function RegionPage() {
                           }}
                           className="hover:opacity-80 transition-opacity"
                         >
-                          <Link to={`/${country}/${region}/${categoryKey}/new-post`}>新規投稿</Link>
+                          <Link to={`/${country}/${region}/${categoryKey}/new`}>新規投稿</Link>
                         </Button>
                       </div>
                       <div className="space-y-4">

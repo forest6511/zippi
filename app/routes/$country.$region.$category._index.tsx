@@ -52,7 +52,9 @@ export default function CategoryPage() {
   }>()
   const { posts, totalPages, currentPage } = useLoaderData<LoaderData>()
 
-  if (postId) {
+  // newページへのアクセスの場合はOutletを返す
+  const pathname = window.location.pathname
+  if (pathname.endsWith('/new') || postId) {
     return <Outlet />
   }
 
@@ -96,7 +98,7 @@ export default function CategoryPage() {
                     country={country || ''}
                     region={region || ''}
                     category={category || ''}
-                    linkTo={`/${country}/${region}/${category}/post/${post.id}`}
+                    linkTo={`/${country}/${region}/${category}/${post.id}`}
                   />
                 ) : (
                   <PostListItem
@@ -105,7 +107,7 @@ export default function CategoryPage() {
                     country={country || ''}
                     region={region || ''}
                     category={category || ''}
-                    linkTo={`/${country}/${region}/${category}/post/${post.id}`}
+                    linkTo={`/${country}/${region}/${category}/${post.id}`}
                   />
                 )
               )}
