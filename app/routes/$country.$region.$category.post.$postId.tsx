@@ -18,16 +18,15 @@ type LoaderData = {
 }
 
 export const loader: LoaderFunction = async ({ params }) => {
-  const { post: postId } = params
+  const { postId } = params
   const post = posts.find((p) => p.id === Number(postId)) || null
-
   return json<LoaderData>({ post })
 }
 
 export const action: ActionFunction = async ({ request, params }) => {
   const formData = await request.formData()
   const content = formData.get('content') as string
-  const postId = Number(params.post)
+  const postId = Number(params.postId)
 
   if (!content) {
     return json({ error: 'コメントを入力してください。' }, { status: 400 })

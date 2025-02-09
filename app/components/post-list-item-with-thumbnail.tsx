@@ -6,6 +6,7 @@ type PostListItemWithThumbnailProps = {
   country: string
   region: string
   category: string
+  linkTo: string
 }
 
 export function PostListItemWithThumbnail({
@@ -13,6 +14,7 @@ export function PostListItemWithThumbnail({
   country,
   region,
   category,
+  linkTo,
 }: PostListItemWithThumbnailProps) {
   return (
     <div className="bg-white p-4 border-t border-b flex">
@@ -24,10 +26,7 @@ export function PostListItemWithThumbnail({
         />
       </div>
       <div className="flex-grow">
-        <Link
-          to={`/${country}/${region}/${category}/${post.id}`}
-          className="block hover:text-primary"
-        >
+        <Link to={linkTo} className="block hover:text-primary">
           <h2 className="text-xl font-bold mb-2">{post.title}</h2>
           <p className="text-sm text-gray-600 mt-2">
             {post.content && post.content.length > 80

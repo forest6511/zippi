@@ -6,15 +6,13 @@ type PostListItemProps = {
   country: string
   region: string
   category: string
+  linkTo: string
 }
 
-export function PostListItem({ post, country, region, category }: PostListItemProps) {
+export function PostListItem({ post, country, region, category, linkTo }: PostListItemProps) {
   return (
     <div className="bg-white p-4 border-t border-b">
-      <Link
-        to={`/${country}/${region}/${category}/${post.id}`}
-        className="block hover:text-primary"
-      >
+      <Link to={linkTo} className="block hover:text-primary">
         <h2 className="text-xl font-bold mb-2">{post.title}</h2>
         <p className="text-sm text-gray-600 mt-2">
           {post.content && post.content.length > 100

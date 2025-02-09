@@ -4,6 +4,7 @@ import { CategoryMenu } from '~/components/category-menu'
 import { categories, type CategoryKey } from '~/data/mock/categories'
 import { countries, posts } from '~/data/mock'
 import { Breadcrumbs } from '~/components/common/breadcrumbs'
+import { Button } from '~/components/ui/button'
 
 export default function RegionPage() {
   const { country, region, category, post } = useParams<{
@@ -48,15 +49,30 @@ export default function RegionPage() {
 
                   return (
                     <div key={categoryKey} className="bg-white rounded-lg p-6 border">
-                      <h2 className="text-xl font-bold mb-4 flex items-center">
-                        <category.icon className="mr-2" style={{ color: category.color }} />
-                        {category.name}
-                      </h2>
+                      <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-xl font-bold flex items-center">
+                          <category.icon className="mr-2" style={{ color: category.color }} />
+                          {category.name}
+                        </h2>
+                        <Button
+                          asChild
+                          variant="outline"
+                          size="sm"
+                          style={{
+                            backgroundColor: category.color,
+                            borderColor: category.color,
+                            color: 'white',
+                          }}
+                          className="hover:opacity-80 transition-opacity"
+                        >
+                          <Link to={`/${country}/${region}/${categoryKey}/new-post`}>新規投稿</Link>
+                        </Button>
+                      </div>
                       <div className="space-y-4">
                         {categoryPosts.map((post) => (
                           <article key={post.id} className="border-b pb-4 last:border-b-0">
                             <Link
-                              to={`/${country}/${region}/${categoryKey}/${post.id}`}
+                              to={`/${country}/${region}/${categoryKey}/post/${post.id}`}
                               className="block hover:text-primary"
                             >
                               <h3 className="font-medium mb-2">{post.title}</h3>

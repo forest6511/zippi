@@ -44,15 +44,15 @@ export const loader: LoaderFunction = async ({ params }) => {
 const categoriesWithThumbnails = ['local_news', 'food', 'housing']
 
 export default function CategoryPage() {
-  const { country, region, category, post } = useParams<{
+  const { country, region, category, postId } = useParams<{
     country: string
     region: string
     category: string
-    post?: string
+    postId?: string
   }>()
   const { posts, totalPages, currentPage } = useLoaderData<LoaderData>()
 
-  if (post) {
+  if (postId) {
     return <Outlet />
   }
 
@@ -96,6 +96,7 @@ export default function CategoryPage() {
                     country={country || ''}
                     region={region || ''}
                     category={category || ''}
+                    linkTo={`/${country}/${region}/${category}/post/${post.id}`}
                   />
                 ) : (
                   <PostListItem
@@ -104,6 +105,7 @@ export default function CategoryPage() {
                     country={country || ''}
                     region={region || ''}
                     category={category || ''}
+                    linkTo={`/${country}/${region}/${category}/post/${post.id}`}
                   />
                 )
               )}
