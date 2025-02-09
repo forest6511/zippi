@@ -1,12 +1,12 @@
-import { useParams, Link, useLoaderData, Form } from "@remix-run/react"
+import { useParams, Link, useLoaderData } from "@remix-run/react"
 import { json, type LoaderFunction, type ActionFunction } from "@remix-run/node"
-import { ClientOnly } from "remix-utils/client-only"
 import { Header } from "~/components/header"
 import { CategoryMenu } from "~/components/category-menu"
-import { ImageGallery } from "~/components/image-gallery"
+import { PostContent } from "~/components/post/post-content"
+import { CommentForm } from "~/components/post/comment-form"
+import { CommentList } from "~/components/post/comment-list"
 import { categories, type CategoryKey } from "~/data/mock/categories"
 import { countries, posts, type Post, type Reply } from "~/data/mock"
-import { MessageCircle } from "lucide-react"
 
 function isCategoryKey(key: string): key is CategoryKey {
   return Object.keys(categories).includes(key)
@@ -92,76 +92,12 @@ export default function PostPage() {
               <span>{post.title}</span>
             </div>
 
-            <article className="bg-white shadow-md rounded-lg p-6 mb-8">
-              <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
-              <div className="text-sm text-gray-500 mb-4">
-                投稿日: {post.date} | 閲覧数: {post.views}
-                {post.replyCount !== undefined && ` | コメント数: ${post.replyCount}`}
-              </div>
-
-              <ClientOnly fallback={<div>画像を読み込み中...</div>}>
-                {() => post.images && post.images.length > 0 && <ImageGallery images={post.images} />}
-              </ClientOnly>
-
-              <div className="prose max-w-none">
-                <p>{post.content}</p>
-              </div>
-
-              {/* 画像がある場合にメッセージを送るボタンを追加 */}
-              {post.images && post.images.length > 0 && (
-                <div className="mt-6">
-                  <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    <MessageCircle className="mr-2 h-5 w-5" />
-                    メッセージを送る
-                  </button>
-                </div>
-              )}
-            </article>
+            <PostContent post={post} />
 
             {post.replies && (
               <div className="space-y-8">
-                <div className="bg-white shadow-md rounded-lg p-6">
-                  <h2 className="text-2xl font-bold mb-4">コメントを投稿</h2>
-                  <Form method="post" className="space-y-4">
-                    <div>
-                      <label htmlFor="content" className="block text-sm font-medium text-gray-700">
-                        コメント
-                      </label>
-                      <textarea
-                        id="content"
-                        name="content"
-                        rows={4}
-                        required
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                      ></textarea>
-                    </div>
-                    <button
-                      type="submit"
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                      コメントを投稿
-                    </button>
-                  </Form>
-                </div>
-
-                <div className="bg-white shadow-md rounded-lg p-6">
-                  <h2 className="text-2xl font-bold mb-4">コメント ({post.replyCount || 0})</h2>
-                  {post.replies.length > 0 ? (
-                    <ul className="space-y-4">
-                      {post.replies.map((reply) => (
-                        <li key={reply.id} className="border-b pb-4 last:border-b-0">
-                          <div className="flex justify-between items-start">
-                            <span className="font-semibold">{reply.author}</span>
-                            <span className="text-sm text-gray-500">{reply.date}</span>
-                          </div>
-                          <p className="mt-2">{reply.content}</p>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p>まだコメントはありません。</p>
-                  )}
-                </div>
+                <CommentForm />
+                <CommentList replies={post.replies} replyCount={post.replyCount || 0} />
               </div>
             )}
           </div>
