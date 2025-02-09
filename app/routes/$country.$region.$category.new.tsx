@@ -1,4 +1,4 @@
-import { useParams, useActionData, Form, useNavigate} from '@remix-run/react'
+import { useParams, useActionData, Form, useNavigate } from '@remix-run/react'
 import { json, redirect, type ActionFunction, type LoaderFunction } from '@remix-run/node'
 import { Header } from '~/components/header'
 import { CategoryMenu } from '~/components/category-menu'
