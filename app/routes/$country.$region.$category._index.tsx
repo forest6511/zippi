@@ -1,4 +1,4 @@
-import { useParams, useLoaderData, Outlet } from '@remix-run/react'
+import { useParams, useLoaderData } from '@remix-run/react'
 import { json, type LoaderFunction } from '@remix-run/node'
 import { Header } from '~/components/header'
 import { CategoryMenu } from '~/components/category-menu'
@@ -44,19 +44,13 @@ export const loader: LoaderFunction = async ({ params }) => {
 const categoriesWithThumbnails = ['local_news', 'food', 'housing']
 
 export default function CategoryPage() {
-  const { country, region, category, postId } = useParams<{
+  const { country, region, category } = useParams<{
     country: string
     region: string
     category: string
-    postId?: string
   }>()
-  const { posts, totalPages, currentPage } = useLoaderData<LoaderData>()
 
-  // newページへのアクセスの場合はOutletを返す
-  const pathname = window.location.pathname
-  if (pathname.endsWith('/new') || postId) {
-    return <Outlet />
-  }
+  const { posts, totalPages, currentPage } = useLoaderData<LoaderData>()
 
   const countryName = country && countries[country] ? countries[country].name : country
   const regionName = (country && region && countries[country]?.regions[region]) || region

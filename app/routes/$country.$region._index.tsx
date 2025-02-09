@@ -1,4 +1,4 @@
-import { useParams, Link, Outlet } from '@remix-run/react'
+import { useParams, Link } from '@remix-run/react'
 import { Header } from '~/components/header'
 import { CategoryMenu } from '~/components/category-menu'
 import { categories, type CategoryKey } from '~/data/mock/categories'
@@ -67,7 +67,7 @@ export default function RegionPage() {
                         {categoryPosts.map((post) => (
                           <article key={post.id} className="border-b pb-4 last:border-b-0">
                             <Link
-                              to={`/${country}/${region}/${categoryKey}/post/${post.id}`}
+                              to={`/${country}/${region}/${categoryKey}/${post.id}`}
                               className="block hover:text-primary"
                             >
                               <h3 className="font-medium mb-2">{post.title}</h3>
