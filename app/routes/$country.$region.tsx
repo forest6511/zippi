@@ -1,8 +1,9 @@
-import { useParams, Link, Outlet } from "@remix-run/react"
-import { Header } from "~/components/header"
-import { CategoryMenu } from "~/components/category-menu"
-import { categories, type CategoryKey } from "~/data/mock/categories"
-import { countries, posts } from "~/data/mock"
+import { useParams, Link, Outlet } from '@remix-run/react'
+import { Header } from '~/components/header'
+import { CategoryMenu } from '~/components/category-menu'
+import { categories, type CategoryKey } from '~/data/mock/categories'
+import { countries, posts } from '~/data/mock'
+import { Breadcrumbs } from '~/components/common/breadcrumbs'
 
 export default function RegionPage() {
   const { country, region, category, post } = useParams<{
@@ -27,17 +28,13 @@ export default function RegionPage() {
 
           {/* メインコンテンツ */}
           <div className="md:w-4/5">
-            <div className="mb-4">
-              <Link to="/" className="text-blue-600 hover:underline">
-                ホーム
-              </Link>
-              {" > "}
-              <Link to={`/${country}`} className="text-blue-600 hover:underline">
-                {countryName}
-              </Link>
-              {" > "}
-              <span>{regionName}</span>
-            </div>
+            <Breadcrumbs
+              items={[
+                { label: 'ホーム', href: '/' },
+                { label: countryName, href: `/${country}` },
+                { label: regionName },
+              ]}
+            />
             <h1 className="text-3xl font-bold mb-6">{regionName}掲示板</h1>
 
             {/* カテゴリー別記事一覧 */}
@@ -45,7 +42,9 @@ export default function RegionPage() {
               {(Object.entries(categories) as [CategoryKey, (typeof categories)[CategoryKey]][])
                 .slice(0, 6)
                 .map(([categoryKey, category]) => {
-                  const categoryPosts = posts.filter((post) => post.category === categoryKey).slice(0, 5)
+                  const categoryPosts = posts
+                    .filter((post) => post.category === categoryKey)
+                    .slice(0, 5)
 
                   return (
                     <div key={categoryKey} className="bg-white rounded-lg p-6 border">
@@ -90,4 +89,3 @@ export default function RegionPage() {
     </div>
   )
 }
-

@@ -1,7 +1,7 @@
-import { ClientOnly } from "remix-utils/client-only"
-import { ImageGallery } from "~/components/image-gallery"
-import { MessageCircle } from "lucide-react"
-import type { Post } from "~/data/mock"
+import { ClientOnly } from 'remix-utils/client-only'
+import { ImageGallery } from '~/components/image-gallery'
+import { MessageCircle } from 'lucide-react'
+import type { Post } from '~/data/mock'
 
 interface PostContentProps {
   post: Post

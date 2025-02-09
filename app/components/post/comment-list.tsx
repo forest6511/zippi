@@ -1,4 +1,4 @@
-import type { Reply } from "~/data/mock"
+import type { Reply } from '~/data/mock'
 
 interface CommentListProps {
   replies: Reply[]
@@ -27,4 +27,3 @@ export function CommentList({ replies, replyCount }: CommentListProps) {
     </div>
   )
 }
-

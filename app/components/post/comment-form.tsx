@@ -1,4 +1,4 @@
-import { Form } from "@remix-run/react"
+import { Form } from '@remix-run/react'
 
 export function CommentForm() {
   return (
@@ -27,4 +27,3 @@ export function CommentForm() {
     </div>
   )
 }
-

@@ -1,12 +1,13 @@
-import { useParams, Link, useLoaderData } from "@remix-run/react"
-import { json, type LoaderFunction, type ActionFunction } from "@remix-run/node"
-import { Header } from "~/components/header"
-import { CategoryMenu } from "~/components/category-menu"
-import { PostContent } from "~/components/post/post-content"
-import { CommentForm } from "~/components/post/comment-form"
-import { CommentList } from "~/components/post/comment-list"
-import { categories, type CategoryKey } from "~/data/mock/categories"
-import { countries, posts, type Post, type Reply } from "~/data/mock"
+import { useParams, useLoaderData } from '@remix-run/react'
+import { json, type LoaderFunction, type ActionFunction } from '@remix-run/node'
+import { Header } from '~/components/header'
+import { CategoryMenu } from '~/components/category-menu'
+import { PostContent } from '~/components/post/post-content'
+import { CommentForm } from '~/components/post/comment-form'
+import { CommentList } from '~/components/post/comment-list'
+import { categories, type CategoryKey } from '~/data/mock/categories'
+import { countries, posts, type Post, type Reply } from '~/data/mock'
+import { Breadcrumbs } from '~/components/common/breadcrumbs'
 
 function isCategoryKey(key: string): key is CategoryKey {
   return Object.keys(categories).includes(key)
@@ -25,18 +26,18 @@ export const loader: LoaderFunction = async ({ params }) => {
 
 export const action: ActionFunction = async ({ request, params }) => {
   const formData = await request.formData()
-  const content = formData.get("content") as string
+  const content = formData.get('content') as string
   const postId = Number(params.post)
 
   if (!content) {
-    return json({ error: "コメントを入力してください。" }, { status: 400 })
+    return json({ error: 'コメントを入力してください。' }, { status: 400 })
   }
 
   const newReply: Reply = {
     id: Date.now(),
-    author: "匿名",
+    author: '匿名',
     content,
-    date: new Date().toISOString().split("T")[0],
+    date: new Date().toISOString().split('T')[0],
   }
 
   const postIndex = posts.findIndex((p) => p.id === postId)
@@ -72,25 +73,15 @@ export default function PostPage() {
           <CategoryMenu country={country} region={region} />
 
           <div className="md:w-full">
-            <div className="mb-4">
-              <Link to="/" className="text-blue-600 hover:underline">
-                ホーム
-              </Link>
-              {" > "}
-              <Link to={`/${country}`} className="text-blue-600 hover:underline">
-                {countryName}
-              </Link>
-              {" > "}
-              <Link to={`/${country}/${region}`} className="text-blue-600 hover:underline">
-                {regionName}
-              </Link>
-              {" > "}
-              <Link to={`/${country}/${region}/${category}`} className="text-blue-600 hover:underline">
-                {categoryName}
-              </Link>
-              {" > "}
-              <span>{post.title}</span>
-            </div>
+            <Breadcrumbs
+              items={[
+                { label: 'ホーム', href: '/' },
+                { label: countryName, href: `/${country}` },
+                { label: regionName, href: `/${country}/${region}` },
+                { label: categoryName, href: `/${country}/${region}/${category}` },
+                { label: post.title },
+              ]}
+            />
 
             <PostContent post={post} />
 
@@ -106,4 +97,3 @@ export default function PostPage() {
     </div>
   )
 }
-

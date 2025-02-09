@@ -1,9 +1,9 @@
-import { useParams, Link, useLoaderData, Outlet } from "@remix-run/react"
-import { json, type LoaderFunction } from "@remix-run/node"
-import { Header } from "~/components/header"
-import { CategoryMenu } from "~/components/category-menu"
-import { PostListItem } from "~/components/post-list-item"
-import { PostListItemWithThumbnail } from "~/components/post-list-item-with-thumbnail"
+import { useParams, useLoaderData, Outlet } from '@remix-run/react'
+import { json, type LoaderFunction } from '@remix-run/node'
+import { Header } from '~/components/header'
+import { CategoryMenu } from '~/components/category-menu'
+import { PostListItem } from '~/components/post-list-item'
+import { PostListItemWithThumbnail } from '~/components/post-list-item-with-thumbnail'
 import {
   Pagination,
   PaginationContent,
@@ -12,9 +12,10 @@ import {
   PaginationNext,
   PaginationPrevious,
   PaginationEllipsis,
-} from "~/components/ui/pagination"
-import { categories, type CategoryKey } from "~/data/mock/categories"
-import { countries, posts, type Post } from "~/data/mock"
+} from '~/components/ui/pagination'
+import { categories, type CategoryKey } from '~/data/mock/categories'
+import { countries, posts, type Post } from '~/data/mock'
+import { Breadcrumbs } from '~/components/common/breadcrumbs'
 
 function isCategoryKey(key: string): key is CategoryKey {
   return Object.keys(categories).includes(key)
@@ -40,7 +41,7 @@ export const loader: LoaderFunction = async ({ params }) => {
   })
 }
 
-const categoriesWithThumbnails = ["local_news", "food", "housing"]
+const categoriesWithThumbnails = ['local_news', 'food', 'housing']
 
 export default function CategoryPage() {
   const { country, region, category, post } = useParams<{
@@ -60,7 +61,7 @@ export default function CategoryPage() {
   const categoryName = category && isCategoryKey(category) ? categories[category].name : category
   const categoryData = category && isCategoryKey(category) ? categories[category] : null
 
-  const showThumbnails = categoriesWithThumbnails.includes(category || "")
+  const showThumbnails = categoriesWithThumbnails.includes(category || '')
 
   return (
     <div className="min-h-screen bg-background">
@@ -71,24 +72,18 @@ export default function CategoryPage() {
 
           {/* メインコンテンツ */}
           <div className="md:w-full">
-            <div className="mb-4">
-              <Link to="/" className="text-blue-600 hover:underline">
-                ホーム
-              </Link>
-              {" > "}
-              <Link to={`/${country}`} className="text-blue-600 hover:underline">
-                {countryName}
-              </Link>
-              {" > "}
-              <Link to={`/${country}/${region}`} className="text-blue-600 hover:underline">
-                {regionName}
-              </Link>
-              {" > "}
-              <span>{categoryName}</span>
-            </div>
-
+            <Breadcrumbs
+              items={[
+                { label: 'ホーム', href: '/' },
+                { label: countryName, href: `/${country}` },
+                { label: regionName, href: `/${country}/${region}` },
+                { label: categoryName },
+              ]}
+            />
             <h1 className="text-3xl font-bold mb-6 flex items-center">
-              {categoryData && <categoryData.icon className="mr-2" style={{ color: categoryData.color }} />}
+              {categoryData && (
+                <categoryData.icon className="mr-2" style={{ color: categoryData.color }} />
+              )}
               {categoryName}
             </h1>
 
@@ -98,19 +93,19 @@ export default function CategoryPage() {
                   <PostListItemWithThumbnail
                     key={post.id}
                     post={post}
-                    country={country || ""}
-                    region={region || ""}
-                    category={category || ""}
+                    country={country || ''}
+                    region={region || ''}
+                    category={category || ''}
                   />
                 ) : (
                   <PostListItem
                     key={post.id}
                     post={post}
-                    country={country || ""}
-                    region={region || ""}
-                    category={category || ""}
+                    country={country || ''}
+                    region={region || ''}
+                    category={category || ''}
                   />
-                ),
+                )
               )}
             </div>
 
@@ -160,4 +155,3 @@ export default function CategoryPage() {
     </div>
   )
 }
-
