@@ -1,14 +1,11 @@
-import { useParams, useActionData, Form, useNavigate } from '@remix-run/react'
+import { useParams, useActionData, useNavigate } from '@remix-run/react'
 import { json, redirect, type ActionFunction, type LoaderFunction } from '@remix-run/node'
 import { Header } from '~/components/common/header'
 import { CategoryMenu } from '~/components/category-menu'
 import { categories, type CategoryKey } from '~/data/mock/categories'
 import { countries, posts } from '~/data/mock'
 import { Breadcrumbs } from '~/components/common/breadcrumbs'
-import { Button } from '~/components/ui/button'
-import { Input } from '~/components/ui/input'
-import { Textarea } from '~/components/ui/textarea'
-import { Label } from '~/components/ui/label'
+import { JobPostingForm } from '~/components/posts/forms/job-posting-form'
 
 function isCategoryKey(key: string): key is CategoryKey {
   return Object.keys(categories).includes(key)
@@ -66,8 +63,6 @@ export default function NewPostPage() {
     region: string
     category: string
   }>()
-  const actionData = useActionData<ActionData>()
-  const navigate = useNavigate()
 
   const countryName = country && countries[country] ? countries[country].name : country
   const regionName = (country && region && countries[country]?.regions[region]) || region
@@ -99,47 +94,7 @@ export default function NewPostPage() {
               {categoryName}に新規投稿
             </h1>
 
-            <Form method="post" className="space-y-6">
-              <div>
-                <Label htmlFor="title">タイトル</Label>
-                <Input
-                  id="title"
-                  name="title"
-                  required
-                  aria-invalid={actionData?.errors?.title ? true : undefined}
-                  aria-describedby="title-error"
-                />
-                {actionData?.errors?.title && (
-                  <p className="text-red-500 text-sm mt-1" id="title-error">
-                    {actionData.errors.title}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <Label htmlFor="content">本文</Label>
-                <Textarea
-                  id="content"
-                  name="content"
-                  required
-                  rows={10}
-                  aria-invalid={actionData?.errors?.content ? true : undefined}
-                  aria-describedby="content-error"
-                />
-                {actionData?.errors?.content && (
-                  <p className="text-red-500 text-sm mt-1" id="content-error">
-                    {actionData.errors.content}
-                  </p>
-                )}
-              </div>
-
-              <div className="flex justify-between">
-                <Button type="submit">投稿する</Button>
-                <Button type="button" variant="outline" onClick={() => navigate(-1)}>
-                  キャンセル
-                </Button>
-              </div>
-            </Form>
+            <JobPostingForm />
           </div>
         </div>
       </main>
