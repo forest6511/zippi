@@ -1,5 +1,5 @@
 import { useParams, Link } from '@remix-run/react'
-import { Header } from '~/components/header'
+import { Header } from '~/components/common/header'
 import { CategoryMenu } from '~/components/category-menu'
 import { categories, type CategoryKey } from '~/data/mock/categories'
 import { countries, posts } from '~/data/mock'

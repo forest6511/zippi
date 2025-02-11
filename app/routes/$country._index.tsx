@@ -3,7 +3,7 @@ import { CategoryMenu } from '~/components/category-menu'
 import { categories } from '~/data/mock/categories'
 import { countries } from '~/data/mock'
 import { Breadcrumbs } from '~/components/common/breadcrumbs'
-import { Header } from '~/components/header'
+import { Header } from '~/components/common/header'
 
 export default function CountryPage() {
   const { country } = useParams<{
