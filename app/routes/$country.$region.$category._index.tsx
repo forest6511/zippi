@@ -1,6 +1,6 @@
 import { useParams, useLoaderData } from '@remix-run/react'
 import { json, type LoaderFunction } from '@remix-run/node'
-import { Header } from '~/components/header'
+import { Header } from '~/components/common/header'
 import { CategoryMenu } from '~/components/category-menu'
 import { PostListItem } from '~/components/post-list-item'
 import { PostListItemWithThumbnail } from '~/components/post-list-item-with-thumbnail'

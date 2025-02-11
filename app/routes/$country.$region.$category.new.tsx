@@ -1,6 +1,6 @@
 import { useParams, useActionData, Form, useNavigate } from '@remix-run/react'
 import { json, redirect, type ActionFunction, type LoaderFunction } from '@remix-run/node'
-import { Header } from '~/components/header'
+import { Header } from '~/components/common/header'
 import { CategoryMenu } from '~/components/category-menu'
 import { categories, type CategoryKey } from '~/data/mock/categories'
 import { countries, posts } from '~/data/mock'

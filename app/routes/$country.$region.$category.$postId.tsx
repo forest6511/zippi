@@ -1,6 +1,6 @@
 import { useParams, useLoaderData } from '@remix-run/react'
 import { json, type LoaderFunction, type ActionFunction } from '@remix-run/node'
-import { Header } from '~/components/header'
+import { Header } from '~/components/common/header'
 import { CategoryMenu } from '~/components/category-menu'
 import { PostContent } from '~/components/post/post-content'
 import { CommentForm } from '~/components/post/comment-form'
