@@ -1,6 +1,65 @@
-## 認証テスト
+# 認証テスト
 
-認証フローの実装確認　
+## OAuth Authentication Flow
+
+```mermaid
+sequenceDiagram
+   actor User
+   participant Browser
+   participant AuthRoute as /routes/auth.[provider]/route.tsx
+   participant CallbackRoute as /routes/auth.[provider].callback/route.tsx
+   participant OAuthService as .server/auth/services/oauth.server.ts
+   participant ProviderService as .server/auth/services/providers/[provider].server.ts
+   participant DBService as .server/auth/services/oauth-db.server.ts
+   participant OAuth as OAuth Provider
+   participant DB as Database
+
+   User->>Browser: ログインボタン押下
+   Browser->>AuthRoute: POST /auth/[provider]
+   AuthRoute->>OAuthService: createOAuthState()
+   AuthRoute->>OAuthService: createOAuthParams()
+   AuthRoute->>Browser: リダイレクト（OAuth認証画面へ）
+   Browser->>OAuth: リダイレクト
+
+   User->>OAuth: 認証・認可
+   OAuth->>Browser: リダイレクト（コード付き）
+   Browser->>CallbackRoute: GET /auth/[provider]/callback
+
+   CallbackRoute->>OAuthService: state検証
+   CallbackRoute->>ProviderService: getAccessToken()
+   ProviderService->>OAuth: トークン取得リクエスト
+   OAuth-->>ProviderService: アクセストークン
+   ProviderService->>OAuth: ユーザー情報取得
+   OAuth-->>ProviderService: ユーザー情報
+
+   CallbackRoute->>DBService: findOrCreateOAuthUser()
+   DBService->>DB: ユーザー検索
+   DB-->>DBService: 検索結果
+   alt ユーザーが存在しない
+       DBService->>DB: ユーザー作成
+       DB-->>DBService: 作成したユーザー
+   else ユーザーが存在する
+       alt アカウントリンクがない
+           DBService->>DB: アカウント作成
+           DB-->>DBService: 更新したユーザー
+       end
+   end
+
+   CallbackRoute->>Browser: セッション作成＆ホームへリダイレクト
+   Browser->>User: ログイン完了
+```
+
+## ファイル構成
+
+- /routes/auth.[provider]/route.tsx: 認証初期処理
+- /routes/auth.[provider].callback/route.tsx: コールバック処理
+- .server/auth/services/oauth.server.ts: OAuth共通処理
+- .server/auth/services/providers/[provider].server.ts: プロバイダー固有の実装
+- .server/auth/services/oauth-db.server.ts: ユーザーのDB処理
+
+Note: [provider] は google または line に置き換え。
+
+---
 
 # Welcome to Remix!
 
@@ -67,7 +126,7 @@ docker exec -it postgres_17_db_container psql -U postgres
 
 Run the following SQL commands:
 
-```sql
+```postgresql
 DROP DATABASE IF EXISTS zippi;
 DROP USER IF EXISTS zippi;
 

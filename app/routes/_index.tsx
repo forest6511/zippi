@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
-import { requireUser, logout } from '@/.server/auth/service'
+import { requireUser, logout } from '~/.server/auth/services/auth.server'
 import { getSession } from '@/.server/session'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui'
 import { Link } from '@remix-run/react'

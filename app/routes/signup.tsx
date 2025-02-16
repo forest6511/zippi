@@ -11,10 +11,11 @@ import {
   Label,
 } from '~/components/ui'
 import { FcGoogle } from 'react-icons/fc'
+import { SiLine } from 'react-icons/si'
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 
-import { signup } from '~/.server/auth/service'
+import { signup } from '~/.server/auth/services/auth.server'
 import { getSession, commitSession } from '~/.server/session'
 
 type ActionData = { error: string } | undefined
@@ -112,6 +113,18 @@ export default function Signup() {
             >
               <FcGoogle className="mr-2 h-4 w-4" />
               Googleでサインアップ
+            </Button>
+          </Form>
+          <Form action={'/auth/line'} method="post">
+            <Button
+              variant="outline"
+              type="submit"
+              className="w-full mt-2 flex items-center justify-center bg-[#00B900] text-white hover:bg-[#00B900]/90"
+              name="provider"
+              value="line"
+            >
+              <SiLine className="mr-2 h-4 w-4" />
+              LINEでログイン
             </Button>
           </Form>
         </CardContent>

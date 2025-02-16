@@ -9,11 +9,11 @@ export async function action({ request }: ActionFunctionArgs) {
   session.set('oauthState', state)
 
   const redirectUrl = createOAuthParams({
-    clientId: process.env.GOOGLE_CLIENT_ID!,
-    redirectUri: `${process.env.APP_URL}/auth/google/callback`,
+    clientId: process.env.LINE_CLIENT_ID!,
+    redirectUri: `${process.env.APP_URL}/auth/line/callback`,
     state,
-    scope: 'openid email profile',
-    authUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
+    scope: 'profile openid email',
+    authUrl: 'https://access.line.me/oauth2/v2.1/authorize',
   })
 
   return redirect(redirectUrl, {

@@ -3,10 +3,10 @@ import { redirect } from '@remix-run/node'
 import { AuthError } from '@/.server/util/errors'
 import { getSession, commitSession } from '@/.server/session'
 import {
-  getGoogleAccessToken,
-  getGoogleUserInfo,
-  findOrCreateGoogleUser,
-} from '@/.server/auth/services/providers/google.server'
+  getLineAccessToken,
+  getLineUserInfo,
+  findOrCreateLineUser,
+} from '@/.server/auth/services/providers/line.server'
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const session = await getSession(request.headers.get('Cookie'))
@@ -24,17 +24,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }
 
   try {
-    const tokenData = await getGoogleAccessToken(
-      code,
-      `${process.env.APP_URL}/auth/google/callback`
-    )
+    const tokenData = await getLineAccessToken(code, `${process.env.APP_URL}/auth/line/callback`)
+    const userData = await getLineUserInfo(tokenData.access_token, tokenData.id_token)
 
-    const userData = await getGoogleUserInfo(tokenData.access_token)
-
-    const user = await findOrCreateGoogleUser({
-      email: userData.email,
-      name: userData.name,
-      providerId: userData.id,
+    const user = await findOrCreateLineUser({
+      userId: userData.userId,
+      name: userData.displayName,
+      email: userData.email, // emailを追加
       accessToken: tokenData.access_token,
       tokenType: tokenData.token_type,
       scope: tokenData.scope,
@@ -54,7 +50,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       },
     })
   } catch (error) {
-    console.error('Google認証エラー:', error)
-    throw new AuthError('Google認証に失敗しました')
+    console.error('LINE認証エラー:', error)
+    throw new AuthError('LINE認証に失敗しました')
   }
 }
