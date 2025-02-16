@@ -15,7 +15,7 @@ import { SiLine } from 'react-icons/si'
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 
-import { signup } from '~/.server/auth/service'
+import { signup } from '~/.server/auth/services/auth.server'
 import { getSession, commitSession } from '~/.server/session'
 
 type ActionData = { error: string } | undefined

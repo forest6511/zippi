@@ -2,8 +2,11 @@ import type { LoaderFunctionArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 import { AuthError } from '@/.server/util/errors'
 import { getSession, commitSession } from '@/.server/session'
-import { getLineAccessToken, getLineUserInfo } from '@/routes/auth.line/oauth-utils'
-import { findOrCreateLineUser } from './user-service'
+import {
+  getLineAccessToken,
+  getLineUserInfo,
+  findOrCreateLineUser,
+} from '@/.server/auth/services/providers/line.server'
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const session = await getSession(request.headers.get('Cookie'))
@@ -21,17 +24,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }
 
   try {
-    const tokenData = await getLineAccessToken(
-      code,
-      `${process.env.APP_URL}/auth/line/callback`
-    )
-
+    const tokenData = await getLineAccessToken(code, `${process.env.APP_URL}/auth/line/callback`)
     const userData = await getLineUserInfo(tokenData.access_token, tokenData.id_token)
 
     const user = await findOrCreateLineUser({
       userId: userData.userId,
       name: userData.displayName,
-      email: userData.email,  // 追加
+      email: userData.email, // emailを追加
       accessToken: tokenData.access_token,
       tokenType: tokenData.token_type,
       scope: tokenData.scope,
@@ -39,8 +38,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
     })
 
     session.set('userId', user.id)
+    session.set('email', user.email)
     session.set('name', user.name ?? '')
-    session.set('email', user.email ?? '')
     session.set('role', user.role)
     session.set('lastLoginAt', new Date().toISOString())
     session.unset('oauthState')

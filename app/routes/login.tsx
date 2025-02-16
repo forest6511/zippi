@@ -19,7 +19,6 @@ import { getSession, commitSession } from '~/.server/session'
 import { FcGoogle } from 'react-icons/fc'
 import { SiLine } from 'react-icons/si'
 
-
 export async function loader({ request }: LoaderFunctionArgs) {
   const session = await getSession(request.headers.get('Cookie'))
 

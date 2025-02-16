@@ -1,29 +1,22 @@
 import type { ActionFunctionArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 import { getSession, commitSession } from '@/.server/session'
-import { createOAuthState } from './oauth-utils'
+import { createOAuthState, createOAuthParams } from '@/.server/auth/services/oauth.server'
 
 export async function action({ request }: ActionFunctionArgs) {
   const session = await getSession(request.headers.get('Cookie'))
-
-  console.log('auth.google session', session)
-
-  // コールバック前後に同じIDが検証用
   const state = createOAuthState()
   session.set('oauthState', state)
 
-  // OAuth2.0認証用のパラメータを設定
-  // https://developers.google.com/identity/protocols/oauth2/web-server?hl=ja#node.js_3
-  const params = new URLSearchParams({
-    client_id: process.env.GOOGLE_CLIENT_ID!,
-    redirect_uri: `${process.env.APP_URL}/auth/google/callback`,
-    response_type: 'code',
+  const redirectUrl = createOAuthParams({
+    clientId: process.env.GOOGLE_CLIENT_ID!,
+    redirectUri: `${process.env.APP_URL}/auth/google/callback`,
+    state,
     scope: 'openid email profile',
-    state: state,
+    authUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
   })
 
-  // Google認証画面へリダイレクト
-  return redirect(`https://accounts.google.com/o/oauth2/v2/auth?${params}`, {
+  return redirect(redirectUrl, {
     headers: {
       'Set-Cookie': await commitSession(session),
     },
