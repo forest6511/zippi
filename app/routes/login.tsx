@@ -17,6 +17,8 @@ import { redirect } from '@remix-run/node'
 import { Form, Link, useActionData } from '@remix-run/react'
 import { getSession, commitSession } from '~/.server/session'
 import { FcGoogle } from 'react-icons/fc'
+import { SiLine } from 'react-icons/si'
+
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const session = await getSession(request.headers.get('Cookie'))
@@ -116,6 +118,18 @@ export default function Login() {
             >
               <FcGoogle className="mr-2 h-4 w-4" />
               Googleでログイン
+            </Button>
+          </Form>
+          <Form action={'/auth/line'} method="post">
+            <Button
+              variant="outline"
+              type="submit"
+              className="w-full mt-2 flex items-center justify-center bg-[#00B900] text-white hover:bg-[#00B900]/90"
+              name="provider"
+              value="line"
+            >
+              <SiLine className="mr-2 h-4 w-4" />
+              LINEでログイン
             </Button>
           </Form>
         </CardContent>
