@@ -1,3 +1,4 @@
+// app/routes/auth.google.callback/route.tsx
 import type { LoaderFunctionArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 import { AuthError } from '@/.server/util/errors'
@@ -38,7 +39,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       accessToken: tokenData.access_token,
       tokenType: tokenData.token_type,
       scope: tokenData.scope,
-      idToken: tokenData.id_token,
+      idToken: userData.idToken,
     })
 
     session.set('userId', user.id)

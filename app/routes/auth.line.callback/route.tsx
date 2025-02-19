@@ -34,7 +34,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       accessToken: tokenData.access_token,
       tokenType: tokenData.token_type,
       scope: tokenData.scope,
-      idToken: tokenData.id_token,
+      idToken: userData.idToken,
     })
 
     session.set('userId', user.id)
