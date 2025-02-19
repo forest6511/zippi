@@ -7,7 +7,7 @@ export type OAuthUserData = {
   accessToken: string
   tokenType: string | null
   scope: string | null
-  idToken: string | null
+  idToken: string
   provider: AuthProvider
 }
 
@@ -15,5 +15,5 @@ export type OAuthTokenResponse = {
   access_token: string
   token_type: string
   scope: string
-  id_token?: string
+  id_token: string
 }

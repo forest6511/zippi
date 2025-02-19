@@ -1,8 +1,9 @@
 import { Button } from '~/components/ui/button'
 import { Menu } from 'lucide-react'
 import { Sheet, SheetContent, SheetTrigger } from '~/components/ui/sheet'
-import { Link } from '@remix-run/react'
+import { Form, Link } from '@remix-run/react'
 import type { Category } from '~/data/mock/categories'
+import { useRouteLoaderData } from 'react-router'
 
 type HeaderProps = {
   categories: Record<string, Category>
@@ -11,6 +12,11 @@ type HeaderProps = {
 }
 
 export function Header({ categories, country, region }: HeaderProps) {
+  const data = useRouteLoaderData('root') as {
+    user: { userId: string | null; name: string | null }
+  }
+  const user = data?.user
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto max-w-7xl flex h-14 items-center px-4">
@@ -42,15 +48,25 @@ export function Header({ categories, country, region }: HeaderProps) {
               </SheetContent>
             </Sheet>
             <div className="flex flex-1 items-center justify-end space-x-2">
-              <Link to="/login" className="text-sm font-medium">
-                ログイン
-              </Link>
-              <Link
-                to="/signup"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-9 items-center justify-center rounded-md px-3 text-sm font-medium"
-              >
-                新規登録
-              </Link>
+              {user?.userId ? (
+                <Form action="/logout" method="post">
+                  <Button type="submit" variant="outline">
+                    ログアウト
+                  </Button>
+                </Form>
+              ) : (
+                <>
+                  <Link to="/login" className="text-sm font-medium">
+                    ログイン
+                  </Link>
+                  <Link
+                    to="/signup"
+                    className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-9 items-center justify-center rounded-md px-3 text-sm font-medium"
+                  >
+                    新規登録
+                  </Link>
+                </>
+              )}
             </div>
           </>
         )}

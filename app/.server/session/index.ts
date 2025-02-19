@@ -18,6 +18,7 @@ export type SessionData = {
   role: string
   lastLoginAt: string
   oauthState?: string
+  redirectTo?: string
 }
 
 export type SessionFlashData = {

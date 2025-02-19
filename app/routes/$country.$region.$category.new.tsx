@@ -1,11 +1,12 @@
 import { useParams } from '@remix-run/react'
-import { json, redirect, type ActionFunction, type LoaderFunction } from '@remix-run/node'
+import { json, redirect, type ActionFunction, LoaderFunctionArgs } from '@remix-run/node'
 import { Header } from '~/components/common/header'
 import { CategoryMenu } from '~/components/category-menu'
 import { categories, type CategoryKey } from '~/data/mock/categories'
 import { countries, posts } from '~/data/mock'
 import { Breadcrumbs } from '~/components/common/breadcrumbs'
-import { JobPostingForm } from '~/components/posts/forms/job-posting-form'
+import { JobPostingForm } from '~/components/features/posts/forms/job-posting-form'
+import { requireAuth } from '~/.server/auth/services/auth.server'
 
 function isCategoryKey(key: string): key is CategoryKey {
   return Object.keys(categories).includes(key)
@@ -18,12 +19,16 @@ type ActionData = {
   }
 }
 
-export const loader: LoaderFunction = async ({ params }) => {
+export async function loader({ request, params }: LoaderFunctionArgs) {
+  const user = await requireAuth(request)
+
   const { country, region, category } = params
   if (!country || !region || !category || !isCategoryKey(category)) {
     throw new Response('Not Found', { status: 404 })
   }
-  return json({})
+
+  console.log(JSON.stringify(user))
+  return json({ user })
 }
 
 export const action: ActionFunction = async ({ request, params }) => {

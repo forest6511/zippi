@@ -39,7 +39,7 @@ export function findOrCreateGoogleUser(userData: {
   accessToken: string
   tokenType: string | null
   scope: string | null
-  idToken: string | null
+  idToken: string
 }) {
   return findOrCreateOAuthUser({
     email: userData.email,

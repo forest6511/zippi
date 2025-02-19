@@ -1,3 +1,4 @@
+// /app/.server/auth/services/auth.server.ts
 import { redirect } from '@remix-run/node'
 import { prisma } from '~/.server/db/client'
 import { signupSchema } from '~/.server/auth/schemas/signup'
@@ -55,16 +56,24 @@ export async function signup(formData: FormData): Promise<User> {
 }
 
 // https://remix.run/docs/en/main/utils/sessions
-export async function requireUser(request: Request) {
-  console.log('auth.server.ts requireUser start')
-  // Cookieヘッダーを取得して渡す
+export async function requireAuth(request: Request, redirectTo?: string) {
+  console.log('auth.server.ts requireAuth start')
+
   const session = await getSession(request.headers.get('Cookie'))
   const userId = session.get('userId')
-  console.log('auth.server.ts requireUser userId', userId)
+
+  console.log('auth.server.ts requireAuth userId', userId)
   if (!userId) {
-    throw redirect('/login')
+    // デフォルトでcurrent URLを使用、明示的な指定があればそちらを優先
+    const loginRedirect = redirectTo || request.url
+    throw redirect(`/login?redirectTo=${encodeURIComponent(loginRedirect)}`)
   }
-  return userId
+
+  return {
+    userId,
+    email: session.get('email'),
+    role: session.get('role')
+  }
 }
 
 export async function logout(request: Request) {
@@ -75,7 +84,7 @@ export async function logout(request: Request) {
   console.log('-------- auth.server.ts logout Cookie ----------')
   console.log('Cookie', session.data)
   console.log('-------- auth.server.ts logout Cookie ----------')
-  return redirect('/login', {
+  return redirect('/', {
     headers: {
       'Set-Cookie': await destroySession(session),
     },

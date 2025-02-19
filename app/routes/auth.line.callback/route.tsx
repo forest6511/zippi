@@ -34,7 +34,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       accessToken: tokenData.access_token,
       tokenType: tokenData.token_type,
       scope: tokenData.scope,
-      idToken: tokenData.id_token,
+      idToken: userData.idToken,
     })
 
     session.set('userId', user.id)
@@ -44,7 +44,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
     session.set('lastLoginAt', new Date().toISOString())
     session.unset('oauthState')
 
-    return redirect('/', {
+    // 保存されていたリダイレクト先へ遷移
+    const savedRedirectTo = session.get('redirectTo')
+    return redirect(savedRedirectTo || '/', {
       headers: {
         'Set-Cookie': await commitSession(session),
       },
