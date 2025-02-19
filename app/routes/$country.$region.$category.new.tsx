@@ -5,7 +5,7 @@ import { CategoryMenu } from '~/components/category-menu'
 import { categories, type CategoryKey } from '~/data/mock/categories'
 import { countries, posts } from '~/data/mock'
 import { Breadcrumbs } from '~/components/common/breadcrumbs'
-import { JobPostingForm } from '~/components/posts/forms/job-posting-form'
+import { JobPostingForm } from '~/components/features/posts/forms/job-posting-form'
 
 function isCategoryKey(key: string): key is CategoryKey {
   return Object.keys(categories).includes(key)
