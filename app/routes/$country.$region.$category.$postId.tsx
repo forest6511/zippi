@@ -1,5 +1,5 @@
 import { useParams, useLoaderData } from '@remix-run/react'
-import { json, type LoaderFunction, type ActionFunction } from '@remix-run/node'
+import { json, type LoaderFunction, type ActionFunction, redirect } from '@remix-run/node'
 import { Header } from '~/components/common/header'
 import { CategoryMenu } from '~/components/category-menu'
 import { PostContent } from '~/components/features/posts/contents/post-content'
@@ -8,6 +8,7 @@ import { CommentList } from '~/components/features/posts/contents/comment-list'
 import { categories, type CategoryKey } from '~/data/mock/categories'
 import { countries, posts, type Post, type Reply } from '~/data/mock'
 import { Breadcrumbs } from '~/components/common/breadcrumbs'
+import { requireAuth } from '~/.server/auth/services/auth.server'
 
 function isCategoryKey(key: string): key is CategoryKey {
   return Object.keys(categories).includes(key)
@@ -25,6 +26,14 @@ export const loader: LoaderFunction = async ({ params }) => {
 }
 
 export const action: ActionFunction = async ({ request, params }) => {
+  // 認証チェック
+  try {
+    await requireAuth(request)
+  } catch (error) {
+    // リダイレクト先として現在のURLを設定
+    throw redirect(`/login?redirectTo=${encodeURIComponent(request.url)}`)
+  }
+
   const formData = await request.formData()
   const content = formData.get('content') as string
   const postId = Number(params.postId)

@@ -1,6 +1,5 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
-import { requireUser, logout } from '~/.server/auth/services/auth.server'
-import { getSession } from '@/.server/session'
+import { ActionFunctionArgs, json, LoaderFunctionArgs } from '@remix-run/node'
+import { logout } from '~/.server/auth/services/auth.server'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui'
 import { Link } from '@remix-run/react'
 import { countries } from '~/data/mock'
@@ -12,22 +11,22 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 // ログイン済みチェック
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  console.log('route.tsx loader', request.url)
-  await requireUser(request)
-
-  // セッションからデータを取得して表示
-  const session = await getSession(request.headers.get('Cookie'))
-  console.log('Session Data:', {
-    userId: session.get('userId'),
-    email: session.get('email'),
-    name: session.get('name'),
-    role: session.get('role'),
-    lastLoginAt: session.get('lastLoginAt'),
-  })
-
-  return null
-}
+// export const loader = async ({ request }: LoaderFunctionArgs) => {
+//   console.log('route.tsx loader', request.url)
+//   await requireUser(request)
+//
+//   // セッションからデータを取得して表示
+//   const session = await getSession(request.headers.get('Cookie'))
+//   console.log('Session Data:', {
+//     userId: session.get('userId'),
+//     email: session.get('email'),
+//     name: session.get('name'),
+//     role: session.get('role'),
+//     lastLoginAt: session.get('lastLoginAt'),
+//   })
+//
+//   return null
+// }
 
 export default function Index() {
   return (

@@ -44,7 +44,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
     session.set('lastLoginAt', new Date().toISOString())
     session.unset('oauthState')
 
-    return redirect('/', {
+    // 保存されていたリダイレクト先へ遷移
+    const savedRedirectTo = session.get('redirectTo')
+    return redirect(savedRedirectTo || '/', {
       headers: {
         'Set-Cookie': await commitSession(session),
       },

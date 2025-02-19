@@ -9,6 +9,13 @@ export async function action({ request }: ActionFunctionArgs) {
   const state = createOAuthState()
   session.set('oauthState', state)
 
+  // フォームからリダイレクト先を取得
+  const formData = await request.formData()
+  const redirectTo = formData.get('redirectTo') as string
+  if (redirectTo) {
+    session.set('redirectTo', redirectTo)
+  }
+
   const redirectUrl = createOAuthParams({
     clientId: process.env.GOOGLE_CLIENT_ID!,
     redirectUri: `${process.env.APP_URL}/auth/google/callback`,

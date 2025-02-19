@@ -1,7 +1,20 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react'
-import type { LinksFunction } from '@remix-run/node'
+import { json, LinksFunction, LoaderFunctionArgs } from '@remix-run/node'
 
 import './tailwind.css'
+import { getSession } from '~/.server/session'
+
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const session = await getSession(request.headers.get('Cookie'))
+
+  return json({
+    user: {
+      userId: session.get('userId') || null,
+      name: session.get('name') || null,
+    }
+  })
+}
 
 export const links: LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },

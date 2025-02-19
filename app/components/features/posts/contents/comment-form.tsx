@@ -23,6 +23,9 @@ export function CommentForm() {
         >
           コメントを投稿
         </button>
+        <p className="text-sm text-gray-500">
+          ※コメントを投稿するにはログインが必要です
+        </p>
       </Form>
     </div>
   )
